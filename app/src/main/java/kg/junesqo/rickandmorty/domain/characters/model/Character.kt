@@ -1,6 +1,7 @@
 package kg.junesqo.rickandmorty.domain.characters.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Character(
     @SerializedName("created")
@@ -22,9 +23,9 @@ data class Character(
     @SerializedName("species")
     val species: String,
     @SerializedName("status")
-    val status: String,
+    var status: String,
     @SerializedName("type")
     val type: String,
     @SerializedName("url")
     val url: String
-)
+):Serializable

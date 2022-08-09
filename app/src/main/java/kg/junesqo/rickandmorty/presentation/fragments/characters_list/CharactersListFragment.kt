@@ -1,54 +1,125 @@
 package kg.junesqo.rickandmorty.presentation.fragments.characters_list
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kg.junesqo.rickandmorty.R
 import kg.junesqo.rickandmorty.databinding.FragmentCharactersListBinding
 import kg.junesqo.rickandmorty.presentation.CharactersPagingAdapter
-import kg.junesqo.rickandmorty.presentation.CharactersViewModel
-import kotlinx.coroutines.flow.onStart
+import kg.junesqo.rickandmorty.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class CharactersListFragment : Fragment() {
 
     lateinit var binding: FragmentCharactersListBinding
-    private val viewModel: CharactersViewModel by viewModels()
+//    lateinit var viewModel: CharactersViewModel
+    private val viewModel: CharactersViewModel by activityViewModels()
+    private var job: Job? = null
+    private var statusFilter: String? = null
+    private var searchString: String? = null
+
     private val adapter: CharactersPagingAdapter by lazy {
         CharactersPagingAdapter(
             CharactersPagingAdapter.OnclickListener { characterId ->
                 findNavController().navigate(
                     R.id.action_charactersListFragment_to_characterDetailsFragment, Bundle().apply {
-                        putSerializable("character_id", characterId)
+                        putInt("character_id", characterId)
                     }
                 )
-            })
+            }
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_characters_list, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentCharactersListBinding.inflate(inflater, container, false)
         return binding.root
-
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvCharacters.adapter = adapter
+        initCharacters()
+        setupSearchView()
+        showFilterDialog()
+    }
+
+    private fun showFilterDialog() {
+        binding.btnFilter.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_charactersListFragment_to_filterDialogFragment
+            )
+            viewModel.selectedStatus.observe(viewLifecycleOwner, Observer {
+                statusFilter = it.toString()
+                Log.e("fragment", it)
+                lifecycleScope.launch {
+                    viewModel.getCharacters(searchString, statusFilter).collect(
+                        adapter::submitData
+                    )
+                }
+            })
+        }
+
+    }
+
+
+    private fun setupSearchView() {
+        binding.etSearch.addTextChangedListener { editable ->
+            job?.cancel()
+            job = lifecycleScope.launch {
+                delay(SEARCH_NEWS_TIME_DELAY)
+                if (editable.toString().isNotEmpty()) {
+                    searchString = editable.toString()
+                    viewModel.getCharacters(editable.toString(), statusFilter)
+                        .collect(
+                            adapter::submitData,
+                        )
+                    hideSoftKeyboard()
+                }
+                else if (editable.toString().isEmpty()) {
+                    viewModel.getCharacters("", statusFilter).collect(
+                        adapter::submitData
+                    )
+                }
+            }
+        }
+    }
+
+    private fun hideSoftKeyboard() {
+        val view = requireActivity().currentFocus
+        view?.let {
+            val inputMethodManager =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+    }
+
+    private fun initCharacters() {
         lifecycleScope.launch {
-            viewModel.characters.collect(
+            viewModel.getCharacters("", statusFilter).collect(
                 adapter::submitData
             )
         }
     }
-
 }

@@ -19,7 +19,15 @@
         <action
             android:id="@+id/action_charactersListFragment_to_characterDetailsFragment"
             app:destination="@id/characterDetailsFragment" />
+        <action
+            android:id="@+id/action_charactersListFragment_to_filterDialogFragment"
+            app:destination="@id/filterDialogFragment" />
 
     </fragment>
+    <dialog
+        android:id="@+id/filterDialogFragment"
+        android:name="kg.junesqo.rickandmorty.presentation.fragments.characters_list.FilterDialogFragment"
+        android:label="FilterDialogFragment"
+        tools:layout="@layout/fragment_filter_dialog"/>
 
 </navigation>

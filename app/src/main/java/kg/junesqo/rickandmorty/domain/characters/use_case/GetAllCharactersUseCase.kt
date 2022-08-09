@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 
 class GetAllCharactersUseCase @Inject constructor(private val charactersRepository: CharactersRepository) {
-    fun invoke(): PagingSource<Int, Character> {
-        return charactersRepository.getAllCharacters()
+    fun invoke(searchString: String?, characterStatus: String?): PagingSource<Int, Character> {
+        return charactersRepository.getAllCharacters(searchString, characterStatus)
     }
 }

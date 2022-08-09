@@ -1,4 +1,4 @@
-package kg.junesqo.rickandmorty.presentation
+package kg.junesqo.rickandmorty.presentation.fragments.character_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,17 +9,17 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kg.junesqo.rickandmorty.domain.characters.model.Character
 import kg.junesqo.rickandmorty.domain.characters.use_case.GetAllCharactersUseCase
+import kg.junesqo.rickandmorty.domain.characters.use_case.GetSingleCharacterUseCase
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(
-    private val getAllCharactersUseCase: GetAllCharactersUseCase
-    ) : ViewModel() {
-    val characters: StateFlow<PagingData<Character>> = Pager(
-        PagingConfig(pageSize = 20, enablePlaceholders = false)
-    ) { getAllCharactersUseCase.invoke() }
-        .flow
-        .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+class CharacterDetailsViewModel @Inject constructor(
+    private val getSingleCharacterUseCase: GetSingleCharacterUseCase
+) : ViewModel() {
+
+    suspend fun getSingleCharacter(characterId: Int) = flow {
+        emit(getSingleCharacterUseCase.invoke(characterId))
+    }
+
 }

@@ -24,7 +24,7 @@ object CharactersModule {
 
     @Singleton
     @Provides
-    fun provideMainRepository(charactersDataSource: CharactersDataSource):CharactersRepository{
-        return CharactersRepositoryImpl(charactersDataSource)
+    fun provideMainRepository(charactersDataSource: CharactersDataSource, charactersApi: CharactersApi):CharactersRepository{
+        return CharactersRepositoryImpl(charactersDataSource, charactersApi)
     }
 }

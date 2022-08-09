@@ -19,16 +19,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder().apply {
-            addConverterFactory(GsonConverterFactory.create())
-            client(okHttpClient)
-            baseUrl(BASE_URL)
-        }.build()
-    }
-
-    @Singleton
-    @Provides
     fun provideOkHttp(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
@@ -38,6 +28,16 @@ object NetworkModule {
             readTimeout(20, TimeUnit.SECONDS)
             writeTimeout(20, TimeUnit.SECONDS)
                 .addInterceptor(logging)
+        }.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder().apply {
+            addConverterFactory(GsonConverterFactory.create())
+            client(okHttpClient)
+            baseUrl(BASE_URL)
         }.build()
     }
 
