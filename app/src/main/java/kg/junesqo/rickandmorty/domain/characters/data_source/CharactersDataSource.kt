@@ -86,7 +86,7 @@ class CharactersDataSource @Inject constructor(
             LoadResult.Page(
                 data = result,
                 prevKey = if (pageNumberLocal == 0) null else pageNumberLocal - 1,
-                nextKey = if (result.isNullOrEmpty()) null else pageNumberLocal + 1
+                nextKey = if (result.isEmpty()) null else pageNumberLocal + 1
             )
         }else{
             LoadResult.Error(e)

@@ -9,7 +9,7 @@ import kg.junesqo.rickandmorty.data.characters.local.local_models.DBCharacter
 
 @Database(
     entities = [DBCharacter::class],
-    version = 1,
+    version = 2,
 )
 @TypeConverters(Converters::class)
 abstract class CharactersDatabase : RoomDatabase() {
