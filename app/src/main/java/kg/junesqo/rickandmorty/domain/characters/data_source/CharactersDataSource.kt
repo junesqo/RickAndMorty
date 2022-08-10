@@ -4,14 +4,19 @@ import android.net.Uri
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import kg.junesqo.rickandmorty.data.characters.local.CharactersDao
+import kg.junesqo.rickandmorty.data.characters.local.local_models.toNetwork
+//import kg.junesqo.rickandmorty.data.characters.local.CharactersDao
 import kg.junesqo.rickandmorty.data.characters.remote.CharactersApi
-import kg.junesqo.rickandmorty.domain.characters.model.Character
+import kg.junesqo.rickandmorty.data.characters.remote.remote_models.Character
+import kg.junesqo.rickandmorty.data.characters.remote.remote_models.toRoom
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class CharactersDataSource @Inject constructor(
 
     private val api: CharactersApi,
+    private val dao: CharactersDao
 
     ) : PagingSource<Int, Character>() {
 
@@ -37,30 +42,17 @@ class CharactersDataSource @Inject constructor(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Character> {
-        try {
-            val page = params.key ?: 1
-            val response = api.getAllCharacters(page = page)
+        val page = params.key ?: 1
+        return try {
+            val response = api.getAllCharacters(page = page, searchQuery, characterStatus)
 
-            return if (response.isSuccessful) {
+            val characters: List<Character>
+            if (response.isSuccessful) {
 
-                //Searching
-                val characters = if (searchQuery != null && characterStatus == null) {
-                    response.body()!!.characters.filter {
-                        it.name.contains(searchQuery!!, true)
-                    }
-                } else if (searchQuery == null && characterStatus != null) {
-                    response.body()!!.characters.filter {
-                        it.status == characterStatus!!
-                    }
-                } else if (searchQuery != null && characterStatus != null) {
-                    response.body()!!.characters.filter {
-                        it.name.contains(searchQuery!!, true)
-                        it.status.contains(characterStatus!!)
-                    }
-                } else {
-                    response.body()!!.characters
-                }
-                Log.e("DataSource", characterStatus.toString())
+                //save to room
+                response.body()?.characters?.map { it.toRoom() }?.let { dao.addCharacters(it) }
+
+                characters = response.body()!!.characters
                 Log.e("DataSource", response.body()?.characters.toString())
 
                 var nextPage: Int? = null
@@ -73,12 +65,31 @@ class CharactersDataSource @Inject constructor(
                     nextKey = nextPage
                 )
             } else {
+                Log.e("DataSource", "No results")
                 LoadResult.Error(HttpException(response))
             }
         } catch (e: HttpException) {
-            return LoadResult.Error(e)
+            Log.e("DataSource", "No internet 2")
+            getLocalData(params, e)
         } catch (e: Exception) {
-            return LoadResult.Error(e)
+            Log.e("DataSource", "No internet 3")
+            getLocalData(params, e)
+        }
+    }
+
+    private suspend fun getLocalData(params: LoadParams<Int>, e: Exception): LoadResult<Int, Character>{
+        val pageNumberLocal = params.key ?: 0
+        val characters = dao.getCharacters(params.loadSize, searchQuery, characterStatus)
+        val result = characters.map { it.toNetwork() }
+        return if (result.isNotEmpty()) {
+            Log.e("Data Source", "Fetching local data")
+            LoadResult.Page(
+                data = result,
+                prevKey = if (pageNumberLocal == 0) null else pageNumberLocal - 1,
+                nextKey = if (result.isNullOrEmpty()) null else pageNumberLocal + 1
+            )
+        }else{
+            LoadResult.Error(e)
         }
     }
 }

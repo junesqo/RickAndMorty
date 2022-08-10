@@ -1,4 +1,4 @@
-package kg.junesqo.rickandmorty.domain.characters.model
+package kg.junesqo.rickandmorty.data.characters.remote.remote_models
 
 import com.google.gson.annotations.SerializedName
 

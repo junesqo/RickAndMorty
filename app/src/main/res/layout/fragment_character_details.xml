@@ -1,48 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".presentation.fragments.character_details.CharacterDetailsFragment">
 
-    <ImageView
-        android:id="@+id/iv_character"
-        android:background="#ccc"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="400dp">
 
-    <TextView
-        android:id="@+id/tv_character"
-        android:text="Rick Sanchez"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        <ImageView
+            android:id="@+id/iv_character"
+            tools:src="@tools:sample/avatars"
+            android:background="#ccc"
+            android:scaleType="centerCrop"
+            android:foreground="@drawable/trending_gradient_shape"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
+
+        <FrameLayout
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_character"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:text="Rick Sanchez"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:text="Alive"
+            android:textColor="#333"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="·"
+            android:textColor="#555"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_gender"
+            android:text="Male"
+            android:textColor="#333"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/middle_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:background="#ddd"
+        />
 
-    <TextView
-        android:id="@+id/tv_status"
-        android:text="Alive"
-        android:textColor="#555"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="20dp"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_gender"
-        android:text="Male"
-        android:textColor="#555"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_species"
+            android:text="Species: Species"
+            android:textColor="#555"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_origin"
+            android:text="Origin: Origin"
+            android:textColor="#555"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:text="Location: Location"
+            android:textColor="#555"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+
 
 </LinearLayout>

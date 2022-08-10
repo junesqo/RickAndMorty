@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kg.junesqo.rickandmorty.databinding.ItemCharacterBinding
-import kg.junesqo.rickandmorty.domain.characters.model.Character
+import kg.junesqo.rickandmorty.data.characters.remote.remote_models.Character
 
 class CharactersPagingAdapter(private val onclickListener: OnclickListener) :
     PagingDataAdapter<Character, CharactersPagingAdapter.CharactersViewHolder>(CharactersDiffCallback) {
@@ -31,6 +31,7 @@ class CharactersPagingAdapter(private val onclickListener: OnclickListener) :
         fun bind(character: Character?) {
             binding.tvName.text = character?.name
             binding.tvStatus.text = character?.status
+            binding.tvGender.text = character?.gender
             Glide.with(binding.root.context)
                 .load(character?.image)
                 .into(binding.ivCharacter)

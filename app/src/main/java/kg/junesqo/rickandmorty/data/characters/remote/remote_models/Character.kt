@@ -1,6 +1,9 @@
-package kg.junesqo.rickandmorty.domain.characters.model
+package kg.junesqo.rickandmorty.data.characters.remote.remote_models
 
 import com.google.gson.annotations.SerializedName
+import kg.junesqo.rickandmorty.data.characters.local.local_models.DBCharacter
+import kg.junesqo.rickandmorty.data.characters.local.local_models.DBLocation
+import kg.junesqo.rickandmorty.data.characters.local.local_models.DBOrigin
 import java.io.Serializable
 
 data class Character(
@@ -29,3 +32,18 @@ data class Character(
     @SerializedName("url")
     val url: String
 ):Serializable
+
+fun Character.toRoom() = DBCharacter(
+    created,
+    episode,
+    gender,
+    id,
+    image,
+    DBLocation(location.name, location.url),
+    name,
+    DBOrigin(origin.name, origin.url),
+    species,
+    status,
+    type,
+    url
+)

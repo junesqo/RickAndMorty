@@ -1,7 +1,7 @@
 package kg.junesqo.rickandmorty.data.characters.remote
 
-import kg.junesqo.rickandmorty.domain.characters.model.Character
-import kg.junesqo.rickandmorty.domain.characters.model.CharactersResponse
+import kg.junesqo.rickandmorty.data.characters.remote.remote_models.Character
+import kg.junesqo.rickandmorty.data.characters.remote.remote_models.CharactersResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,6 +19,6 @@ interface CharactersApi {
     @GET("character/{id}")
     suspend fun getSingleCharacter(
         @Path("id") id: Int
-    ): Response<Character>
+    ): Character
 
 }
