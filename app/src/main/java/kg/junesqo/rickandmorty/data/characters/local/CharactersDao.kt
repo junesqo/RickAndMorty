@@ -12,7 +12,7 @@ interface CharactersDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addCharacters(characters: List<DBCharacter>)
 
-    @Query("SELECT * FROM characters WHERE (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') AND (:statusFilter IS NULL OR status LIKE '%' || :statusFilter || '%') AND id IN (SELECT id FROM characters LIMIT :size) ")
+    @Query("SELECT DISTINCT * FROM characters WHERE (:searchQuery IS NULL OR name LIKE '%' || :searchQuery || '%') AND (:statusFilter IS NULL OR status LIKE '%' || :statusFilter || '%') AND id IN (SELECT DISTINCT id FROM characters) ORDER BY id ASC LIMIT :size")
     suspend fun getCharacters(size: Int, searchQuery: String?, statusFilter: String?): List<DBCharacter>
 
 }

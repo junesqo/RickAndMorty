@@ -29,7 +29,10 @@ class CharactersViewModel @Inject constructor(
     fun getCharacters(searchString: String?, characterStatus: String?): Flow<PagingData<Character>> {
         val characters: StateFlow<PagingData<Character>> = Pager(
         PagingConfig(
-            pageSize = 20,
+            pageSize = 0,
+            maxSize = 30,
+            prefetchDistance = 1,
+            initialLoadSize = 10,
             enablePlaceholders = false))
     {
         getAllCharactersUseCase.invoke(searchString, characterStatus)

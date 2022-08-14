@@ -80,13 +80,14 @@ class CharactersDataSource @Inject constructor(
     private suspend fun getLocalData(params: LoadParams<Int>, e: Exception): LoadResult<Int, Character>{
         val pageNumberLocal = params.key ?: 0
         val characters = dao.getCharacters(params.loadSize, searchQuery, characterStatus)
-        val result = characters.map { it.toNetwork() }
+        val result = characters.distinct().map { it.toNetwork() }
+
         return if (result.isNotEmpty()) {
             Log.e("Data Source", "Fetching local data")
             LoadResult.Page(
-                data = result,
+                data = result.distinct(),
                 prevKey = if (pageNumberLocal == 0) null else pageNumberLocal - 1,
-                nextKey = if (result.isEmpty()) null else pageNumberLocal + 1
+                nextKey = if (result.isNullOrEmpty()) null else pageNumberLocal + 1
             )
         }else{
             LoadResult.Error(e)
